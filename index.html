@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#eef1f5" />
+  <title>Алёна Санина — AI / Вайб-кодинг</title>
+  <style>
+    :root {
+      --bg: #eef1f5;
+      --ink: #11121a;
+      --muted: #6f7480;
+      --pink: #ff36d3;
+      --violet: #7c4dff;
+      --mint: #24ffc8;
+      --blue: #20d8ff;
+      --glass: rgba(255, 255, 255, .52);
+      --glass-strong: rgba(255, 255, 255, .74);
+      --dark: #11121a;
+      --radius-xl: 34px;
+      --radius-lg: 28px;
+      --shadow-soft: 0 26px 80px rgba(20, 24, 42, .13);
+      --shadow-neon: 0 0 24px rgba(124, 77, 255, .25), 0 0 46px rgba(36, 255, 200, .14);
+      --ease: cubic-bezier(.2, .8, .2, 1);
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 18% 8%, rgba(32, 216, 255, .32), transparent 30%),
+        radial-gradient(circle at 84% 2%, rgba(255, 54, 211, .20), transparent 27%),
+        radial-gradient(circle at 50% 54%, rgba(124, 77, 255, .12), transparent 36%),
+        linear-gradient(135deg, #f8fafc 0%, var(--bg) 42%, #e9edf3 100%);
+      overflow-x: hidden;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      opacity: .42;
+      background-image:
+        linear-gradient(rgba(17, 18, 26, .045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(17, 18, 26, .045) 1px, transparent 1px);
+      background-size: 26px 26px;
+      mask-image: linear-gradient(to bottom, #000 0%, rgba(0,0,0,.72) 48%, transparent 100%);
+    }
+
+    .page {
+      position: relative;
+      z-index: 1;
+      width: min(100%, 480px);
+      min-height: 100vh;
+      margin: 0 auto;
+      padding: 34px 18px max(28px, env(safe-area-inset-bottom));
+      overflow: hidden;
+    }
+
+    .aurora {
+      position: fixed;
+      inset: -18% -34% auto -34%;
+      height: 55vh;
+      z-index: 0;
+      pointer-events: none;
+      filter: blur(12px);
+      opacity: .75;
+      background:
+        radial-gradient(circle at 25% 28%, rgba(36, 255, 200, .28), transparent 18%),
+        radial-gradient(circle at 66% 20%, rgba(255, 54, 211, .22), transparent 23%),
+        radial-gradient(circle at 50% 50%, rgba(124, 77, 255, .22), transparent 30%);
+      animation: auroraMove 12s var(--ease) infinite alternate;
+    }
+
+    .brain-wrap {
+      position: absolute;
+      top: -22px;
+      left: 50%;
+      width: 560px;
+      max-width: 126vw;
+      transform: translateX(-50%);
+      z-index: -1;
+      opacity: .60;
+      pointer-events: none;
+      animation: brainFloat 7s ease-in-out infinite;
+    }
+
+    .brain-svg {
+      width: 100%;
+      height: auto;
+      overflow: visible;
+      filter: drop-shadow(0 0 18px rgba(32, 216, 255, .30)) drop-shadow(0 0 34px rgba(255, 54, 211, .16));
+    }
+
+    .brain-line {
+      fill: none;
+      stroke-width: 1.45;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      opacity: .8;
+      animation: linePulse 4.8s ease-in-out infinite;
+    }
+
+    .brain-node {
+      transform-origin: center;
+      animation: dotPulse 2.6s ease-in-out infinite;
+    }
+
+    .brain-node:nth-of-type(3n) { animation-delay: .3s; }
+    .brain-node:nth-of-type(4n) { animation-delay: .8s; }
+    .brain-node:nth-of-type(5n) { animation-delay: 1.2s; }
+
+    .particles {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .particle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      border-radius: 999px;
+      background: rgba(32, 216, 255, .62);
+      box-shadow: 0 0 16px rgba(32, 216, 255, .8);
+      animation: particleRise linear infinite;
+      opacity: .5;
+    }
+
+    .hero {
+      position: relative;
+      padding-top: 14px;
+      text-align: center;
+      animation: fadeUp .8s var(--ease) both;
+    }
+
+    .ai-icon {
+      position: relative;
+      display: grid;
+      place-items: center;
+      width: 76px;
+      height: 76px;
+      margin: 0 auto 18px;
+      border-radius: 29px;
+      color: #fff;
+      font-weight: 900;
+      font-size: 24px;
+      letter-spacing: -.04em;
+      background:
+        linear-gradient(#151622, #11121a) padding-box,
+        linear-gradient(135deg, var(--blue), var(--mint), var(--pink), var(--violet)) border-box;
+      border: 2px solid transparent;
+      box-shadow:
+        0 18px 46px rgba(17, 18, 26, .30),
+        0 0 26px rgba(32, 216, 255, .42),
+        0 0 52px rgba(255, 54, 211, .24);
+      animation: glowBreath 3.3s ease-in-out infinite;
+    }
+
+    .ai-icon::after {
+      content: "";
+      position: absolute;
+      inset: 11px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, rgba(255,255,255,.14), transparent 42%);
+      pointer-events: none;
+    }
+
+    h1 {
+      margin: 0;
+      color: #10152f;
+      font-size: clamp(38px, 11vw, 54px);
+      line-height: .92;
+      letter-spacing: -.078em;
+      font-weight: 950;
+      text-wrap: balance;
+    }
+
+    .subtitle {
+      margin: 18px auto 0;
+      max-width: 386px;
+      color: var(--muted);
+      font-size: 16.5px;
+      line-height: 1.48;
+      letter-spacing: -.015em;
+    }
+
+    .subtitle strong {
+      color: var(--ink);
+      font-weight: 850;
+    }
+
+    .links-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 13px;
+      margin-top: 30px;
+      animation: fadeUp .8s var(--ease) .12s both;
+    }
+
+    .glass-card {
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      min-height: 142px;
+      padding: 18px;
+      border-radius: var(--radius-lg);
+      text-decoration: none;
+      color: var(--ink);
+      background: linear-gradient(145deg, rgba(255,255,255,.72), rgba(255,255,255,.34));
+      border: 1px solid rgba(255,255,255,.72);
+      box-shadow: var(--shadow-soft), inset 0 1px 0 rgba(255,255,255,.8), var(--shadow-neon);
+      backdrop-filter: blur(22px) saturate(1.35);
+      -webkit-backdrop-filter: blur(22px) saturate(1.35);
+      transform: translateZ(0);
+      transition: transform .42s var(--ease), box-shadow .42s var(--ease), border-color .42s var(--ease);
+      animation: cardFloat 5.8s ease-in-out infinite;
+    }
+
+    .glass-card:nth-child(2) { animation-delay: .8s; }
+
+    .glass-card::before, .product-card::before, .lead-card::before {
+      content: "";
+      position: absolute;
+      inset: -1px;
+      background: linear-gradient(115deg, transparent 0 22%, rgba(255,255,255,.75) 36%, transparent 50% 100%);
+      transform: translateX(-115%);
+      opacity: .56;
+      pointer-events: none;
+    }
+
+    .glass-card:hover, .glass-card:focus-visible,
+    .product-card:hover, .lead-card:hover {
+      transform: translateY(-5px) scale(1.01);
+      box-shadow: 0 30px 90px rgba(20, 24, 42, .17), 0 0 34px rgba(32, 216, 255, .22), 0 0 56px rgba(255, 54, 211, .16);
+      border-color: rgba(255,255,255,.95);
+    }
+
+    .glass-card:hover::before, .product-card:hover::before, .lead-card:hover::before { animation: shimmer 1.25s var(--ease); }
+    .glass-card:active, .button:active { transform: scale(.965); }
+
+    .logo {
+      width: 52px;
+      height: 52px;
+      flex: 0 0 auto;
+      margin-bottom: auto;
+      filter: drop-shadow(0 12px 20px rgba(32, 216, 255, .22));
+    }
+
+    .link-title {
+      margin-top: 20px;
+      font-size: 18px;
+      font-weight: 900;
+      letter-spacing: -.035em;
+    }
+
+    .link-subtitle {
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 13.5px;
+      font-weight: 650;
+    }
+
+    .section-stack {
+      display: grid;
+      gap: 16px;
+      margin-top: 18px;
+    }
+
+    .lead-card, .product-card {
+      position: relative;
+      overflow: hidden;
+      border-radius: var(--radius-xl);
+      padding: 24px;
+      box-shadow: var(--shadow-soft);
+      backdrop-filter: blur(22px) saturate(1.35);
+      -webkit-backdrop-filter: blur(22px) saturate(1.35);
+      transition: transform .42s var(--ease), box-shadow .42s var(--ease);
+      animation: fadeUp .8s var(--ease) both, cardFloat 6.8s ease-in-out infinite;
+    }
+
+    .lead-card {
+      margin-top: 2px;
+      color: #fff;
+      background:
+        radial-gradient(circle at 12% 0%, rgba(36, 255, 200, .26), transparent 33%),
+        radial-gradient(circle at 92% 12%, rgba(255, 54, 211, .25), transparent 38%),
+        linear-gradient(145deg, #171824, #0d0f18 76%);
+      border: 1px solid rgba(255,255,255,.10);
+      animation-delay: .22s, .2s;
+    }
+
+    .product-card {
+      background: linear-gradient(145deg, rgba(255,255,255,.78), rgba(255,255,255,.40));
+      border: 1px solid rgba(255,255,255,.78);
+      box-shadow: var(--shadow-soft), inset 0 1px 0 rgba(255,255,255,.8), 0 0 38px rgba(124,77,255,.11);
+      animation-delay: .34s, .4s;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 13px;
+      color: rgba(255,255,255,.72);
+      font-size: 12px;
+      font-weight: 850;
+      text-transform: uppercase;
+      letter-spacing: .15em;
+    }
+
+    .product-card .eyebrow { color: var(--muted); }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--mint);
+      box-shadow: 0 0 14px var(--mint), 0 0 26px rgba(36,255,200,.5);
+      animation: glowBreath 2.1s ease-in-out infinite;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 26px;
+      line-height: 1.04;
+      letter-spacing: -.062em;
+      font-weight: 950;
+      text-wrap: balance;
+    }
+
+    .card-copy {
+      margin: 13px 0 0;
+      color: rgba(255,255,255,.68);
+      font-size: 15px;
+      line-height: 1.48;
+      letter-spacing: -.012em;
+    }
+
+    .product-card .card-copy { color: var(--muted); }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 18px;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 30px;
+      padding: 7px 11px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: -.01em;
+      color: rgba(255,255,255,.82);
+      background: rgba(255,255,255,.10);
+      border: 1px solid rgba(255,255,255,.13);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.10);
+    }
+
+    .product-card .tag {
+      color: #292b35;
+      background: rgba(255,255,255,.56);
+      border-color: rgba(17,18,26,.06);
+    }
+
+    .price-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 20px;
+      padding: 15px 16px;
+      border-radius: 22px;
+      background: rgba(255,255,255,.58);
+      border: 1px solid rgba(255,255,255,.76);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.8);
+    }
+
+    .price-label {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 760;
+    }
+
+    .price {
+      color: var(--ink);
+      font-size: 22px;
+      font-weight: 950;
+      letter-spacing: -.055em;
+      white-space: nowrap;
+    }
+
+    .button {
+      position: relative;
+      isolation: isolate;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      min-height: 58px;
+      margin-top: 20px;
+      border-radius: 22px;
+      text-decoration: none;
+      font-size: 15.5px;
+      font-weight: 950;
+      letter-spacing: -.02em;
+      cursor: pointer;
+      transition: transform .35s var(--ease), box-shadow .35s var(--ease);
+    }
+
+    .button::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background: linear-gradient(115deg, transparent 0 30%, rgba(255,255,255,.7) 45%, transparent 58% 100%);
+      transform: translateX(-120%);
+      animation: buttonShimmer 3.8s var(--ease) infinite;
+    }
+
+    .button-light {
+      color: #10121c;
+      background: linear-gradient(135deg, #fff, #eef5ff);
+      box-shadow: 0 16px 38px rgba(32, 216, 255, .18), 0 0 28px rgba(36,255,200,.22);
+    }
+
+    .button-dark {
+      color: #fff;
+      background:
+        radial-gradient(circle at 12% 0%, rgba(36,255,200,.42), transparent 28%),
+        linear-gradient(135deg, #10121c, #181a27 60%, #11121a);
+      box-shadow: 0 18px 42px rgba(17,18,26,.22), 0 0 28px rgba(124,77,255,.24), 0 0 34px rgba(255,54,211,.16);
+    }
+
+    .button:hover, .button:focus-visible {
+      transform: translateY(-3px);
+      animation: buttonBounce .72s var(--ease);
+    }
+
+    footer {
+      margin-top: 28px;
+      text-align: center;
+      color: rgba(17,18,26,.38);
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: .34em;
+      animation: fadeUp .8s var(--ease) .5s both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes glowBreath {
+      0%, 100% { filter: brightness(1); }
+      50% { filter: brightness(1.14); }
+    }
+
+    @keyframes cardFloat {
+      0%, 100% { translate: 0 0; }
+      50% { translate: 0 -5px; }
+    }
+
+    @keyframes brainFloat {
+      0%, 100% { transform: translateX(-50%) scale(1); opacity: .52; }
+      50% { transform: translateX(-50%) scale(1.035); opacity: .68; }
+    }
+
+    @keyframes dotPulse {
+      0%, 100% { opacity: .58; transform: scale(.86); }
+      50% { opacity: 1; transform: scale(1.45); }
+    }
+
+    @keyframes linePulse {
+      0%, 100% { opacity: .44; }
+      50% { opacity: .88; }
+    }
+
+    @keyframes shimmer {
+      to { transform: translateX(120%); }
+    }
+
+    @keyframes buttonShimmer {
+      0%, 60% { transform: translateX(-120%); }
+      100% { transform: translateX(120%); }
+    }
+
+    @keyframes auroraMove {
+      from { transform: translate3d(-2%, -1%, 0) rotate(-2deg) scale(1); }
+      to { transform: translate3d(3%, 4%, 0) rotate(4deg) scale(1.08); }
+    }
+
+    @keyframes particleRise {
+      from { transform: translateY(110vh) scale(.7); opacity: 0; }
+      12% { opacity: .55; }
+      88% { opacity: .38; }
+      to { transform: translateY(-12vh) scale(1.35); opacity: 0; }
+    }
+
+    @keyframes buttonBounce {
+      0%, 100% { scale: 1; }
+      45% { scale: 1.025; }
+      70% { scale: .995; }
+    }
+
+    @media (max-width: 360px) {
+      .page { padding-inline: 14px; }
+      .links-grid { gap: 10px; }
+      .glass-card { min-height: 132px; padding: 15px; border-radius: 24px; }
+      .logo { width: 47px; height: 47px; }
+      h2 { font-size: 23px; }
+      .lead-card, .product-card { padding: 21px; }
+      .subtitle { font-size: 15.5px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .001ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: .001ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="aurora"></div>
+  <div class="particles" aria-hidden="true"></div>
+
+  <main class="page">
+    <div class="brain-wrap" aria-hidden="true">
+      <svg class="brain-svg" viewBox="0 0 620 390" role="img">
+        <defs>
+          <linearGradient id="brainStroke" x1="0" x2="1" y1="0" y2="1">
+            <stop offset="0" stop-color="#20d8ff"/>
+            <stop offset=".48" stop-color="#24ffc8"/>
+            <stop offset="1" stop-color="#ff36d3"/>
+          </linearGradient>
+          <radialGradient id="nodeGlow">
+            <stop offset="0" stop-color="#ffffff"/>
+            <stop offset=".35" stop-color="#24ffc8"/>
+            <stop offset="1" stop-color="#20d8ff" stop-opacity="0"/>
+          </radialGradient>
+          <filter id="softGlow" x="-70%" y="-70%" width="240%" height="240%">
+            <feGaussianBlur stdDeviation="5" result="blur"/>
+            <feMerge>
+              <feMergeNode in="blur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+        </defs>
+
+        <path class="brain-line" stroke="url(#brainStroke)" d="M164 210 C105 202 86 158 106 122 C123 92 155 90 178 102 C188 66 224 49 263 66 C292 28 353 32 377 76 C420 61 465 85 472 130 C516 141 535 184 515 220 C497 254 459 259 430 241 C410 284 354 294 316 263 C280 291 226 283 207 239 C190 241 176 232 164 210Z"/>
+        <path class="brain-line" stroke="url(#brainStroke)" d="M179 148 C222 132 259 138 292 163 C322 186 360 185 407 162 C434 149 463 153 486 176"/>
+        <path class="brain-line" stroke="url(#brainStroke)" d="M137 181 C180 172 217 190 242 223 C267 257 312 249 342 218 C372 187 414 193 456 221"/>
+        <path class="brain-line" stroke="url(#brainStroke)" d="M213 105 C222 143 240 165 272 178 C313 194 329 216 318 262"/>
+        <path class="brain-line" stroke="url(#brainStroke)" d="M354 79 C345 119 356 150 390 174 C422 197 429 221 413 251"/>
+        <path class="brain-line" stroke="url(#brainStroke)" d="M158 212 C198 207 229 196 264 172 C308 142 347 135 396 151"/>
+        <path class="brain-line" stroke="url(#brainStroke)" d="M236 83 C260 113 291 122 325 111 C357 101 386 112 411 139"/>
+        <path class="brain-line" stroke="url(#brainStroke)" d="M207 239 C236 229 264 231 289 248 C317 267 352 266 381 244 C403 227 426 224 454 234"/>
+
+        <g filter="url(#softGlow)">
+          <circle class="brain-node" cx="178" cy="102" r="5" fill="url(#nodeGlow)"/>
+          <circle class="brain-node" cx="213" cy="105" r="4.5" fill="url(#nodeGlow)"/>
+          <circle class="brain-node" cx="263" cy="66" r="5" fill="url(#nodeGlow)"/>
+          <circle class="brain-node" cx="292" cy="163" r="5" fill="url(#nodeGlow)"/>
+          <circle class="brain-node" cx="325" cy="111" r="4.5" fill="url(#nodeGlow)"/>
+          <circle class="brain-node" cx="377" cy="76" r="5" fill="url(#nodeGlow)"/>
+          <circle class="brain-node" cx="407" cy="162" r="5.5" fill="url(#nodeGlow)"/>
+          <circle class="brain-node" cx="472" cy="130" r="4.5" fill="url(#nodeGlow)"/>
+          <circle class="brain-node" cx="486" cy="176" r="5" fill="url(#nodeGlow)"/>
+          <circle class="brain-node" cx="137" cy="181" r="4.5" fill="url(#nodeGlow)"/>
+          <circle class="brain-node" cx="242" cy="223" r="5" fill="url(#nodeGlow)"/>
+          <circle class="brain-node" cx="318" cy="262" r="5" fill="url(#nodeGlow)"/>
+          <circle class="brain-node" cx="342" cy="218" r="4.5" fill="url(#nodeGlow)"/>
+          <circle class="brain-node" cx="413" cy="251" r="5" fill="url(#nodeGlow)"/>
+          <circle class="brain-node" cx="456" cy="221" r="5" fill="url(#nodeGlow)"/>
+          <circle class="brain-node" cx="207" cy="239" r="4.5" fill="url(#nodeGlow)"/>
+          <circle class="brain-node" cx="381" cy="244" r="4.5" fill="url(#nodeGlow)"/>
+        </g>
+      </svg>
+    </div>
+
+    <section class="hero" aria-label="Главный блок">
+      <div class="ai-icon">AI</div>
+      <h1>Алёна Санина</h1>
+      <p class="subtitle">
+        Создаю и показываю, как делать <strong>ботов, сайты, мини-приложения и AI-продукты</strong> через вайб-кодинг.
+      </p>
+    </section>
+
+    <section class="links-grid" aria-label="Ссылки">
+      <a class="glass-card" href="https://t.me/YOUR_CHANNEL" target="_blank" rel="noopener noreferrer" aria-label="Открыть Telegram канал">
+        <svg class="logo" viewBox="0 0 64 64" aria-hidden="true">
+          <defs>
+            <linearGradient id="tgGradBg" x1="6" y1="6" x2="58" y2="58">
+              <stop offset="0" stop-color="#20d8ff"/>
+              <stop offset=".55" stop-color="#7c4dff"/>
+              <stop offset="1" stop-color="#ff36d3"/>
+            </linearGradient>
+            <linearGradient id="tgGradWing" x1="16" y1="18" x2="50" y2="48">
+              <stop offset="0" stop-color="#ffffff"/>
+              <stop offset="1" stop-color="#d8f6ff"/>
+            </linearGradient>
+          </defs>
+          <rect x="4" y="4" width="56" height="56" rx="19" fill="url(#tgGradBg)"/>
+          <path d="M14 30 49 16c2.4-.9 4.3.9 3.6 3.4l-6 26.4c-.5 2.1-1.9 2.6-3.7 1.6l-9.6-7-4.5 4.4c-.6.6-1 .9-1.9.9l.7-9.7L45 19.6c.7-.6.1-1-1-.4L20.6 33.7l-7.3-2.3c-1.6-.5-1.6-1.6.7-2.4Z" fill="url(#tgGradWing)"/>
+          <circle cx="46" cy="20" r="2.4" fill="#24ffc8" opacity=".9"/>
+        </svg>
+        <div class="link-title">Telegram</div>
+        <div class="link-subtitle">Канал</div>
+      </a>
+
+      <a class="glass-card" href="https://max.ru/YOUR_LINK" target="_blank" rel="noopener noreferrer" aria-label="Открыть MAX">
+        <svg class="logo" viewBox="0 0 64 64" aria-hidden="true">
+          <defs>
+            <radialGradient id="maxGradBg" cx=".3" cy=".85" r="1.1">
+              <stop offset="0" stop-color="#3aa8ff"/>
+              <stop offset=".45" stop-color="#5b6cf0"/>
+              <stop offset="1" stop-color="#8a3fd1"/>
+            </radialGradient>
+          </defs>
+          <circle cx="32" cy="32" r="28" fill="url(#maxGradBg)"/>
+          <path d="M32 16c-8.8 0-16 6.7-16 15 0 5.2 2.9 9.8 7.3 12.5l-1.5 5.4c-.3 1 .8 1.8 1.7 1.3l5.5-3.1c1 .2 2 .3 3 .3 8.8 0 16-6.7 16-15s-7.2-16-16-16Zm0 21.2a6 6 0 1 1 0-12 6 6 0 0 1 0 12Z" fill="#fff"/>
+        </svg>
+        <div class="link-title">MAX</div>
+        <div class="link-subtitle">Если ТГ не открывается</div>
+      </a>
+    </section>
+
+    <section class="section-stack" aria-label="Продукты">
+      <article class="lead-card">
+        <div class="eyebrow"><span class="dot"></span> Методичка</div>
+        <h2>ChatGPT: от нуля до личного AI-агента</h2>
+        <p class="card-copy">
+          Простой старт с ChatGPT: как с его помощью писать тексты, придумывать идеи, делать контент и подачу — и легко выходить на свои первые цифровые продукты.
+        </p>
+        <div class="tags" aria-label="Темы">
+          <span class="tag">контент</span>
+          <span class="tag">тексты</span>
+          <span class="tag">идеи</span>
+          <span class="tag">первые продукты</span>
+          <span class="tag">без кода</span>
+        </div>
+        <div class="price-row">
+          <span class="price-label">Доступ к методичке</span>
+          <span class="price">390 ₽</span>
+        </div>
+        <a class="button button-light" href="https://saninagpt.ru/landing" target="_blank" rel="noopener noreferrer">Забрать методичку →</a>
+      </article>
+
+      <article class="product-card">
+        <div class="eyebrow"><span class="dot"></span> Методичка</div>
+        <h2>Вайб-кодинг: первые деньги на AI-проектах</h2>
+        <p class="card-copy">
+          Методичка для старта: как собирать лендинги, Telegram-ботов и мини-приложения через нейросети, упаковать услугу и выйти на первые заказы.
+        </p>
+        <div class="tags" aria-label="Темы">
+          <span class="tag">сайты</span>
+          <span class="tag">боты</span>
+          <span class="tag">мини-аппы</span>
+          <span class="tag">продажи услуги</span>
+        </div>
+        <div class="price-row">
+          <span class="price-label">Доступ к материалам</span>
+          <span class="price">990 ₽</span>
+        </div>
+        <a class="button button-dark" href="https://vibestart.com.ru/landing" target="_blank" rel="noopener noreferrer">Купить методичку →</a>
+      </article>
+    </section>
+
+    <footer>AI · CODE · PRODUCT</footer>
+  </main>
+
+  <script>
+    (() => {
+      const particles = document.querySelector('.particles');
+      const count = window.matchMedia('(max-width: 360px)').matches ? 16 : 24;
+
+      for (let i = 0; i < count; i += 1) {
+        const p = document.createElement('span');
+        p.className = 'particle';
+        p.style.left = `${Math.random() * 100}%`;
+        p.style.animationDuration = `${7 + Math.random() * 9}s`;
+        p.style.animationDelay = `${Math.random() * 7}s`;
+        p.style.width = p.style.height = `${2 + Math.random() * 4}px`;
+        p.style.background = Math.random() > .55 ? 'rgba(255, 54, 211, .55)' : 'rgba(32, 216, 255, .62)';
+        particles.appendChild(p);
+      }
+
+      const interactive = document.querySelectorAll('a, button');
+      interactive.forEach((el) => {
+        el.addEventListener('pointerdown', () => el.style.transitionDuration = '.12s');
+        el.addEventListener('pointerup', () => el.style.transitionDuration = '');
+        el.addEventListener('pointercancel', () => el.style.transitionDuration = '');
+      });
+    })();
+  </script>
+</body>
+</html>
