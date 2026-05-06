@@ -467,6 +467,109 @@
       animation: fadeUp .8s var(--ease) .5s both;
     }
 
+    .legal {
+      margin: 22px auto 0;
+      max-width: 420px;
+      text-align: center;
+      color: rgba(17,18,26,.55);
+      font-size: 12px;
+      line-height: 1.55;
+      letter-spacing: -.005em;
+      animation: fadeUp .8s var(--ease) .55s both;
+    }
+
+    .legal a {
+      color: rgba(17,18,26,.78);
+      text-decoration: underline;
+      text-decoration-color: rgba(124,77,255,.45);
+      text-underline-offset: 3px;
+      font-weight: 700;
+      transition: color .25s var(--ease);
+    }
+
+    .legal a:hover { color: var(--violet); }
+
+    .cookie-banner {
+      position: fixed;
+      left: 50%;
+      bottom: max(16px, env(safe-area-inset-bottom));
+      transform: translate(-50%, 24px);
+      width: min(calc(100% - 24px), 460px);
+      padding: 16px 18px;
+      z-index: 50;
+      border-radius: 22px;
+      color: #fff;
+      background:
+        radial-gradient(circle at 0% 0%, rgba(36,255,200,.20), transparent 40%),
+        radial-gradient(circle at 100% 0%, rgba(255,54,211,.18), transparent 42%),
+        linear-gradient(145deg, rgba(20,22,34,.92), rgba(13,15,24,.92));
+      border: 1px solid rgba(255,255,255,.10);
+      box-shadow: 0 24px 64px rgba(10,12,20,.45), 0 0 28px rgba(124,77,255,.22);
+      backdrop-filter: blur(22px) saturate(1.35);
+      -webkit-backdrop-filter: blur(22px) saturate(1.35);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .45s var(--ease), transform .45s var(--ease);
+    }
+
+    .cookie-banner.is-visible {
+      opacity: 1;
+      transform: translate(-50%, 0);
+      pointer-events: auto;
+    }
+
+    .cookie-text {
+      margin: 0 0 12px;
+      color: rgba(255,255,255,.78);
+      font-size: 12.5px;
+      line-height: 1.5;
+      letter-spacing: -.005em;
+    }
+
+    .cookie-text a {
+      color: #fff;
+      text-decoration: underline;
+      text-decoration-color: rgba(36,255,200,.55);
+      text-underline-offset: 3px;
+    }
+
+    .cookie-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .cookie-btn {
+      flex: 1;
+      min-height: 38px;
+      padding: 0 14px;
+      border-radius: 13px;
+      font-size: 13px;
+      font-weight: 850;
+      letter-spacing: -.01em;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: transform .25s var(--ease), box-shadow .25s var(--ease), background .25s var(--ease);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .cookie-btn-accept {
+      color: #10121c;
+      background: linear-gradient(135deg, #fff, #e2f6ff);
+      box-shadow: 0 10px 26px rgba(36,255,200,.22);
+    }
+
+    .cookie-btn-policy {
+      color: #fff;
+      background: rgba(255,255,255,.08);
+      border-color: rgba(255,255,255,.16);
+    }
+
+    .cookie-btn:hover { transform: translateY(-2px); }
+    .cookie-btn:active { transform: scale(.97); }
+
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(18px); }
       to { opacity: 1; transform: translateY(0); }
@@ -691,7 +794,27 @@
     </section>
 
     <footer>AI · CODE · PRODUCT</footer>
+
+    <p class="legal">
+      Нажимая на ссылки сайта, вы соглашаетесь с:
+      <br>
+      <a href="https://disk.yandex.ru/i/Tl5n8aZFyUb9cw" target="_blank" rel="noopener noreferrer">Политикой конфиденциальности</a>,
+      <a href="https://disk.yandex.ru/i/VUxYF3Y_fIlLMQ" target="_blank" rel="noopener noreferrer">Офертой</a>,
+      <a href="https://disk.yandex.ru/i/7lD9-_lWa84Wvg" target="_blank" rel="noopener noreferrer">Согласием на обработку персональных данных</a>,
+      <a href="https://disk.yandex.ru/i/4O40dtiFC4Mdbw" target="_blank" rel="noopener noreferrer">Согласием на получение рекламных сообщений</a>.
+    </p>
   </main>
+
+  <div class="cookie-banner" id="cookieBanner" role="dialog" aria-live="polite" aria-label="Использование cookie">
+    <p class="cookie-text">
+      Мы используем cookie-файлы и аналогичные технологии для корректной работы сайта, аналитики и улучшения пользовательского опыта. Продолжая использование сайта, вы соглашаетесь с
+      <a href="https://disk.yandex.ru/i/Tl5n8aZFyUb9cw" target="_blank" rel="noopener noreferrer">Политикой конфиденциальности</a>.
+    </p>
+    <div class="cookie-actions">
+      <button type="button" class="cookie-btn cookie-btn-accept" id="cookieAccept">Принять</button>
+      <a class="cookie-btn cookie-btn-policy" href="https://disk.yandex.ru/i/Tl5n8aZFyUb9cw" target="_blank" rel="noopener noreferrer">Политика</a>
+    </div>
+  </div>
 
   <script>
     (() => {
@@ -715,6 +838,19 @@
         el.addEventListener('pointerup', () => el.style.transitionDuration = '');
         el.addEventListener('pointercancel', () => el.style.transitionDuration = '');
       });
+
+      const banner = document.getElementById('cookieBanner');
+      const acceptBtn = document.getElementById('cookieAccept');
+      const STORAGE_KEY = 'sanina-cookie-consent-v1';
+      let accepted = false;
+      try { accepted = localStorage.getItem(STORAGE_KEY) === '1'; } catch (e) { /* ignore */ }
+      if (banner && !accepted) {
+        setTimeout(() => banner.classList.add('is-visible'), 700);
+        acceptBtn?.addEventListener('click', () => {
+          banner.classList.remove('is-visible');
+          try { localStorage.setItem(STORAGE_KEY, '1'); } catch (e) { /* ignore */ }
+        });
+      }
     })();
   </script>
 </body>
