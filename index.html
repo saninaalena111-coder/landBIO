@@ -738,14 +738,25 @@
       <a class="glass-card" href="https://max.ru/id230413278073_biz" target="_blank" rel="noopener noreferrer" aria-label="Открыть MAX">
         <svg class="logo" viewBox="0 0 64 64" aria-hidden="true">
           <defs>
-            <radialGradient id="maxGradBg" cx=".3" cy=".85" r="1.1">
-              <stop offset="0" stop-color="#3aa8ff"/>
-              <stop offset=".45" stop-color="#5b6cf0"/>
-              <stop offset="1" stop-color="#8a3fd1"/>
-            </radialGradient>
+            <linearGradient id="maxGradBg" x1="6" y1="6" x2="58" y2="58">
+              <stop offset="0" stop-color="#28b6ff"/>
+              <stop offset=".55" stop-color="#5b56f0"/>
+              <stop offset="1" stop-color="#a23dd1"/>
+            </linearGradient>
+            <linearGradient id="maxBubble" x1="22" y1="14" x2="46" y2="52">
+              <stop offset="0" stop-color="#ffffff"/>
+              <stop offset=".55" stop-color="#eaf3ff"/>
+              <stop offset="1" stop-color="#cfe1ff"/>
+            </linearGradient>
+            <linearGradient id="maxBubbleHi" x1="24" y1="16" x2="34" y2="32">
+              <stop offset="0" stop-color="#ffffff" stop-opacity=".95"/>
+              <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+            </linearGradient>
           </defs>
-          <circle cx="32" cy="32" r="28" fill="url(#maxGradBg)"/>
-          <path d="M32 16c-8.8 0-16 6.7-16 15 0 5.2 2.9 9.8 7.3 12.5l-1.5 5.4c-.3 1 .8 1.8 1.7 1.3l5.5-3.1c1 .2 2 .3 3 .3 8.8 0 16-6.7 16-15s-7.2-16-16-16Zm0 21.2a6 6 0 1 1 0-12 6 6 0 0 1 0 12Z" fill="#fff"/>
+          <rect x="4" y="4" width="56" height="56" rx="15" fill="url(#maxGradBg)"/>
+          <rect x="4" y="4" width="56" height="28" rx="15" fill="#ffffff" opacity=".10"/>
+          <path d="M32.5 14c-8.8 0-16 6.7-16 15 0 5.4 2.9 10.1 7.4 12.9l-1.6 6.8c-.3 1.2 1 2.1 2 1.4l6.6-4.4c.5.1 1 .1 1.6.1 8.8 0 16-6.7 16-15s-7.2-16.8-16-16.8Zm0 21a5.8 5.8 0 1 1 0-11.6 5.8 5.8 0 0 1 0 11.6Z" fill="url(#maxBubble)" stroke="#ffffff" stroke-opacity=".55" stroke-width="1"/>
+          <path d="M22 22c2-3 6-5 10-5" stroke="url(#maxBubbleHi)" stroke-width="2.4" stroke-linecap="round" fill="none"/>
         </svg>
         <div class="link-title">MAX</div>
         <div class="link-subtitle">Если ТГ не открывается</div>
